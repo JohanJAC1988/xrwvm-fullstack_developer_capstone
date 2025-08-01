@@ -1,18 +1,28 @@
-# Uncomment the imports before you add the code
-# from django.urls import path
-from django.conf.urls.static import static
-from django.conf import settings
-# from . import views
+"""
+Aplicación URLs (a nivel de aplicación 'dealerships')
 
-app_name = 'djangoapp'
+Aquí defines las rutas específicas de tu aplicación.
+"""
+from django.urls import path
+from . import views
+
+# Define el nombre de la aplicación para evitar conflictos de nombres
+app_name = 'dealerships'
+
 urlpatterns = [
-    # # path for registration
+    # Ruta para la página de inicio que muestra la lista de concesionarios
+    path('', views.get_dealerships, name='index'),
 
-    # path for login
-    # path(route='login', view=views.login_user, name='login'),
+    # Ruta para la página 'acerca de'
+    path('about/', views.about, name='about'),
 
-    # path for dealer reviews view
+    # Ruta para la página de 'contacto'
+    path('contact/', views.contact, name='contact'),
 
-    # path for add a review view
+    # Ruta para ver los detalles de un concesionario y sus reseñas
+    # El <int:dealer_id> es un parámetro dinámico que captura el ID del concesionario
+    path('<int:dealer_id>/', views.get_dealer_details, name='dealer_details'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Ruta para el formulario de publicación de una nueva reseña
+    path('postreview/<int:dealer_id>/', views.post_review, name='post_review'),
+]
