@@ -1,65 +1,69 @@
-# Uncomment the required imports before adding the code
+"""
+Aplicación Views (a nivel de aplicación 'dealerships')
 
-# from django.shortcuts import render
-# from django.http import HttpResponseRedirect, HttpResponse
-# from django.contrib.auth.models import User
-# from django.shortcuts import get_object_or_404, render, redirect
-# from django.contrib.auth import logout
-# from django.contrib import messages
-# from datetime import datetime
+Aquí se encuentra la lógica para manejar las solicitudes web
+y renderizar las plantillas HTML correspondientes.
+"""
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
-from django.http import JsonResponse
-from django.contrib.auth import login, authenticate
-import logging
-import json
-from django.views.decorators.csrf import csrf_exempt
-# from .populate import initiate
+# Importa el cliente API (asumiendo que tienes un archivo api_client.py)
+# from .api_client import get_dealerships, get_reviews_for_dealer, add_review
 
+def get_dealerships(request):
+    """
+    Vista para mostrar la página de inicio con la lista de concesionarios.
+    """
+    # Lógica para obtener datos de concesionarios desde la API
+    # dealerships = get_dealerships()
+    # return render(request, 'dealerships/index.html', {'dealerships': dealerships})
 
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
+    # Ejemplo de datos estáticos para propósitos de demostración
+    dealerships = [
+        {'id': 1, 'name': 'Concesionario Norte', 'city': 'Ciudad de México'},
+        {'id': 2, 'name': 'Concesionario Sur', 'city': 'Guadalajara'},
+    ]
+    return render(request, 'dealerships/index.html', {'dealerships': dealerships})
 
+def about(request):
+    """
+    Vista para mostrar la página 'Acerca de'.
+    """
+    return render(request, 'dealerships/about.html')
 
-# Create your views here.
+def contact(request):
+    """
+    Vista para mostrar la página de 'Contacto'.
+    """
+    return render(request, 'dealerships/contact.html')
 
-# Create a `login_request` view to handle sign in request
-@csrf_exempt
-def login_user(request):
-    # Get username and password from request.POST dictionary
-    data = json.loads(request.body)
-    username = data['userName']
-    password = data['password']
-    # Try to check if provide credential can be authenticated
-    user = authenticate(username=username, password=password)
-    data = {"userName": username}
-    if user is not None:
-        # If user is valid, call login method to login current user
-        login(request, user)
-        data = {"userName": username, "status": "Authenticated"}
-    return JsonResponse(data)
+def get_dealer_details(request, dealer_id):
+    """
+    Vista para mostrar los detalles de un concesionario y sus reseñas.
+    """
+    # Lógica para obtener los detalles del concesionario y sus reseñas desde la API
+    # dealer = get_dealer_by_id(dealer_id)
+    # reviews = get_reviews_for_dealer(dealer_id)
+    # return render(request, 'dealerships/dealer_details.html', {'dealer': dealer, 'reviews': reviews})
 
-# Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+    # Ejemplo de datos estáticos para propósitos de demostración
+    dealer = {'id': dealer_id, 'name': 'Concesionario {}'.format(dealer_id)}
+    reviews = [
+        {'text': 'Excelente servicio.', 'sentiment': 'positive'},
+        {'text': 'Experiencia regular.', 'sentiment': 'negative'},
+    ]
+    return render(request, 'dealerships/dealer_details.html', {'dealer': dealer, 'reviews': reviews})
 
-# Create a `registration` view to handle sign up request
-# @csrf_exempt
-# def registration(request):
-# ...
+def post_review(request, dealer_id):
+    """
+    Vista para manejar el envío del formulario de una nueva reseña.
+    """
+    if request.method == 'POST':
+        # Lógica para procesar la reseña y enviarla a la API
+        # review_text = request.POST.get('review_text')
+        # ...
+        # add_review(dealer_id, review_text)
+        return redirect('dealerships:dealer_details', dealer_id=dealer_id)
 
-# # Update the `get_dealerships` view to render the index page with
-# a list of dealerships
-# def get_dealerships(request):
-# ...
-
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-# def get_dealer_reviews(request,dealer_id):
-# ...
-
-# Create a `get_dealer_details` view to render the dealer details
-# def get_dealer_details(request, dealer_id):
-# ...
-
-# Create a `add_review` view to submit a review
-# def add_review(request):
-# ...
+    # Si la solicitud no es POST, simplemente muestra el formulario
+    return render(request, 'dealerships/post_review.html', {'dealer_id': dealer_id})
